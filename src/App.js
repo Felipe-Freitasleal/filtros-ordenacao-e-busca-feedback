@@ -21,6 +21,8 @@ const CardsContainer = styled.div`
 function App() {
   const [pesquisa, setPesquisa] = useState("");
   const [idFilter, setIdFilter] = useState("");
+  const [tipo, setTipo] = useState("")
+  const [ordem, setOrdem] = useState("")
 
   return (
     <>
@@ -30,15 +32,38 @@ function App() {
         setIdFilter={setIdFilter}
         pesquisa={pesquisa}
         setPesquisa={setPesquisa}
+        tipo={tipo}
+        setTipo={setTipo}
+        ordem={ordem}
+        setOrdem={setOrdem}
       />
       <CardsContainer>
         {pokemons.filter((pokemon) => {
-          return idFilter ? pokemon.id.includes(idFilter) : pokemon
+          // BUSCAR POR ID
+        //return idFilter ? pokemon.id.includes(idFilter) : pokemon
+          return pokemon.id.includes(idFilter) 
         })
           .filter((pokemon) => {
+            // BUSCAR POR NOME
             return pokemon.name.english.toLowerCase().includes(pesquisa.toLowerCase());
           })
+          .filter((pokemon) => {
+            // BUSCAR POR QUALQUER TIPO
+            // return tipo ? pokemon.type.includes(tipo) : pokemon
+
+            // BUSCAR APENAS PELO PRIMEIRO TIPO
+           return  pokemon.type[0].includes(tipo) 
+          })
+          .sort((atual, seguinte) => {
+            // ORDENA OS POKEMONS EM ORDEM ALFABETICA
+            if(ordem === "crescente"){
+              return atual.name.english < seguinte.name.english ? -1 :1
+            } else if( ordem === "decrescente") {
+              return atual.name.english > seguinte.name.english ? -1 : 1
+            }
+          })
           .map((pokemon) => {
+            // RENDERIZA OS POKEMONS NA TELA
             return (
               <PokemonCard
                 cardColor={getColors(pokemon.type[0])}
